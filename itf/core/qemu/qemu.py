@@ -49,8 +49,8 @@ class Qemu:
         """
         self.__qemu_path = "/usr/bin/qemu-system-x86_64"
 
-        self.__first_network_device_name = "unknown"
-        self.__second_network_device_name = "unknown"
+        self.__first_network_device_name = None
+        self.__second_network_device_name = None
         self.__first_network_adapter_mac = "52:54:11:22:33:01"
         self.__second_network_adapter_mac = "52:54:11:22:33:02"
         self.__first_network_device_ip_address = host_first_network_device_ip_address
@@ -130,8 +130,11 @@ class Qemu:
             except KeyError:
                 pass
 
-        if "unknown" in (self.__first_network_device_name, self.__second_network_device_name):
-            logger.fatal("Could not find correct tap devices. Please setup network for Qemu first!")
+        if not self.__first_network_device_name:
+            logger.fatal("Could not find correct tap device. "
+                         f"Tried looking for {self.__first_network_device_ip_address}"
+                         f" and {self.__second_network_device_ip_address}. "
+                        "Please setup network for Qemu first!")
             sys.exit(-1)
 
     def __build_qemu_command(self):
@@ -157,6 +160,9 @@ class Qemu:
         )
 
     def __second_network_adapter(self):
+        if not self.__second_network_device_name:
+            return ""
+
         return (
             f" -netdev tap,id=t2,ifname={self.__second_network_device_name},script=no,downscript=no"
             f" -device virtio-net-pci,netdev=t2,id=nic2,mac={self.__second_network_adapter_mac},guest_csum=off"
