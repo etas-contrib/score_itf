@@ -11,6 +11,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 load("@rules_python//python:defs.bzl", "py_library")
+load("@itf_pip//:requirements.bzl", "requirement")
 
 py_library(
     name = "ssh",
@@ -19,6 +20,9 @@ py_library(
         "sftp.py",
         "ssh.py",
         "ssh_command.py",
+    ],
+    deps = [
+        requirement("paramiko"),
     ],
     imports = ["."],
     visibility = ["//visibility:public"],

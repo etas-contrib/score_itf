@@ -11,6 +11,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 load("@rules_python//python:defs.bzl", "py_library")
+load("@itf_pip//:requirements.bzl", "requirement")
 
 py_library(
     name = "qemu",
@@ -23,5 +24,6 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         "//itf/core/utils/process",
+        requirement("netifaces"),
     ],
 )
