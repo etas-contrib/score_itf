@@ -32,6 +32,9 @@ def pytest_addoption(parser):
     )
     parser.addoption("--qemu-image", action="store", help="Path to a QEMU image")
     parser.addoption("--qemu-arch", action="store", help="Qemu architecture type")
+    # NOTE: This new option added -> unit test to be added in ITF side
+    # USAGE in pytest implementaton example: test_binary_path = request.config.getoption("--test-binary")
+    parser.addoption("--test-binary", action="store", help="Path to the test binary to be executed on the target")
 
 
 @pytest.fixture(scope="session")

@@ -20,10 +20,15 @@ logger = logging.getLogger(__name__)
 
 
 def pre_tests_phase(target):
-    _check_ping(target, check_timeout=10)
-    _check_ssh_is_up(target, check_timeout=5, check_n_retries=5)
-    _check_sftp_is_up(target)
+    check_fail_cnt = 0
+    if not _check_ping(target, check_timeout=10): check_fail_cnt = check_fail_cnt + 1
+    if not _check_ssh_is_up(target, check_timeout=5, check_n_retries=5): check_fail_cnt = check_fail_cnt + 1
+    if not _check_sftp_is_up(target): check_fail_cnt = check_fail_cnt + 1
+
     # TODO Add more checks in pre_tests_phase
+
+    logger.info(f"pre_tests_phase failed test count: {check_fail_cnt}")
+    assert check_fail_cnt == 0, "Running pre_tests_phase at lease one check failed!"    
 
 
 def _check_ping(target, check_timeout: int = 180):
@@ -35,8 +40,13 @@ def _check_ping(target, check_timeout: int = 180):
     :raises AssertionError: If the target cannot be pinged within the specified time-frame.
     """
     result = target.ping(timeout=check_timeout)
-    assert result, f"Target is not pingable within expected time frame"
-    logger.info("Check target ping: OK")
+    # assert result, f"Target is not pingable within expected time frame"
+    if not result:
+        logger.info("Check target ping: FAIL")
+        return False
+    else:
+        logger.info("Check target ping: OK")
+        return True
 
 
 def _check_ssh_is_up(target, check_timeout: int = 15, check_n_retries: int = 5):
@@ -50,8 +60,13 @@ def _check_ssh_is_up(target, check_timeout: int = 15, check_n_retries: int = 5):
     """
     with target.ssh(timeout=check_timeout, n_retries=check_n_retries, retry_interval=2) as ssh:
         result = ssh.execute_command("echo Qnx_S-core!")
-    assert result == 0, "Running SSH command on the target failed"
-    logger.info("Check target ssh: OK")
+    # assert result == 0, "Running SSH command on the target failed"
+    if result != 0:
+        logger.info("Check target ssh: FAIL")
+        return False
+    else:
+        logger.info("Check target ssh: OK")
+        return True
 
 
 def _check_sftp_is_up(target):
@@ -62,5 +77,10 @@ def _check_sftp_is_up(target):
     """
     with target.sftp() as sftp:
         result = sftp.list_dirs_and_files("/")
-    assert result, "Running SFTP command on the target failed"
-    logger.info("Check target sftp: OK")
+    # assert result, "Running SFTP command on the target failed"
+    if not result:
+        logger.info("Check target sftp: FAIL")
+        return False
+    else:
+        logger.info("Check target sftp: OK")
+        return True
