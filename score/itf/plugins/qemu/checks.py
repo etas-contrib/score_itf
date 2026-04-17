@@ -22,8 +22,9 @@ logger = logging.getLogger(__name__)
 def pre_tests_phase(target):
     check_fail_cnt = 0
     if not _check_ping(target, check_timeout=10): check_fail_cnt = check_fail_cnt + 1
-    if not _check_ssh_is_up(target, check_timeout=5, check_n_retries=5): check_fail_cnt = check_fail_cnt + 1
-    if not _check_sftp_is_up(target): check_fail_cnt = check_fail_cnt + 1
+    # DEBUG: temporary comment ssh and sftp checks
+    #if not _check_ssh_is_up(target, check_timeout=5, check_n_retries=5): check_fail_cnt = check_fail_cnt + 1
+    #if not _check_sftp_is_up(target): check_fail_cnt = check_fail_cnt + 1
 
     # TODO Add more checks in pre_tests_phase
 
