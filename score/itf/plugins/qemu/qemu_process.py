@@ -12,6 +12,7 @@
 # *******************************************************************************
 import logging
 import subprocess
+import time             # DEBUG
 
 from score.itf.core.process.console import PipeConsole
 from score.itf.plugins.qemu.qemu import Qemu
@@ -63,6 +64,14 @@ class QemuProcess:
         # pylint: disable=too-many-function-args
         qemu_subprocess = self._qemu.start(subprocess_params)
         self._console = PipeConsole("QEMU", qemu_subprocess)
+        #############################################################################
+        # To analyze a solution for pre_tests_phase failures on pipelines
+        # SLEEP 5s for DEBUG HERE:
+        time.sleep(5)
+        # then evaluate a while loop with a 10s timeout on the "stdout": subprocess.PIPE
+        # waiting at least for the "---> Starting sshd" deamon up and running or
+        # "---> Starting sshd" to ensure that the OS is up and running
+        #############################################################################
         return self
 
     def stop(self):
