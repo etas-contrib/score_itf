@@ -67,7 +67,9 @@ class QemuProcess:
         #############################################################################
         # To analyze a solution for pre_tests_phase failures on pipelines
         # SLEEP 5s for DEBUG HERE:
-        time.sleep(5)
+        logging.info("Sleeping for 20s to debug pre_tests_phase failures on pipelines...")
+        time.sleep(20)
+        logging.info("Finished sleeping for 20s.")
         # then evaluate a while loop with a 10s timeout on the "stdout": subprocess.PIPE
         # waiting at least for the "---> Starting sshd" deamon up and running or
         # "---> Starting sshd" to ensure that the OS is up and running
